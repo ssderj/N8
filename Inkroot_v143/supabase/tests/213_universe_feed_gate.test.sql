@@ -1,0 +1,19 @@
+-- Hand-run check for migration 213. Run in the SQL editor as the service role, inside a transaction you roll back.
+-- Replace the two uuids with a real writer (A) who has at least one follower and one review, and any other user (B).
+--
+--   begin;
+--   -- 1. The public feed carries no follow / review rows for anyone:
+--   select kind, count(*) from list_living_universe_feed(100) group by kind;      -- expect only 'release' and 'guild'
+--
+--   -- 2. Writer A sees their own follows and reviews:
+--   select set_config('request.jwt.claims', '{"sub":"<A-uuid>","role":"authenticated"}', true);
+--   select kind, payload from list_my_universe_activity(50);                       -- expect 'follow' + 'review' rows
+--
+--   -- 3. User B sees none of A's:
+--   select set_config('request.jwt.claims', '{"sub":"<B-uuid>","role":"authenticated"}', true);
+--   select kind, payload from list_my_universe_activity(50);                       -- expect only B's own, or nothing
+--
+--   -- 4. Signed out gets nothing:
+--   select set_config('request.jwt.claims', '', true);
+--   select count(*) from list_my_universe_activity(50);                            -- expect 0
+--   rollback;

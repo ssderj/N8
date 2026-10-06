@@ -1,0 +1,37 @@
+name: Deploy remaining functions
+
+on: workflow_dispatch
+
+env:
+  PROJECT_REF: cfabvlgpsemixhbedvzt
+  SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Inkroot_v143
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Deploy the 9 Paystack functions
+        run: |
+          for f in \
+            paystack-banks \
+            paystack-resolve-account \
+            paystack-save-bank-account \
+            paystack-init-hosting-fee \
+            paystack-init-pack-purchase \
+            paystack-init-purchase \
+            paystack-init-event-entry \
+            paystack-withdraw \
+            manual-withdraw; do
+            supabase functions deploy "$f" --project-ref "$PROJECT_REF"
+          done
+      - name: Deploy the two secret-protected ones
+        run: |
+          supabase functions deploy paystack-reconcile --no-verify-jwt --project-ref "$PROJECT_REF"
+          supabase functions deploy purge-storage-queue --no-verify-jwt --project-ref "$PROJECT_REF"

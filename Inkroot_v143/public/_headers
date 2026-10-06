@@ -1,0 +1,9 @@
+# Security headers (audit #22). Read by Netlify and Cloudflare Pages; Vite copies public/ into the build.
+# vercel.json carries the same set for Vercel — keep the two identical. See SECURITY_HEADERS.md.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), usb=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://js.paystack.co https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://cfabvlgpsemixhbedvzt.supabase.co; connect-src 'self' blob: data: https://cfabvlgpsemixhbedvzt.supabase.co wss://cfabvlgpsemixhbedvzt.supabase.co https://*.paystack.co https://*.paystack.com; frame-src https://*.paystack.co https://*.paystack.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
